@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Global</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/animations.css">
+  <link rel="stylesheet" href="/css/font-awesome5.css">
+  <link rel="stylesheet" href="/css/icomoon.css">
+  <link rel="stylesheet" href="/css/main.css" class="color-switcher-link">
+  <link rel="stylesheet" href="/css/shop.css" class="color-switcher-link">
+
+
+  <script src="/vendor/modernizr-2.6.2.min.js"></script>
+
+
+
+</head>
+
+<body>
+  <%= yield %>
+  <%= javascript_include_tag 'compressed' %>
+  <%= javascript_include_tag 'main' %>
+</body>
+</html>
