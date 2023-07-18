@@ -86,4 +86,41 @@ end
 # Run the necessary tasks during deployment
 after 'deploy:updated', 'deploy:yarn_install'
 after 'deploy:yarn_install', 'deploy:compile_assets'
+namespace :deploy do
+  desc 'Copy package.json and yarn.lock'
+  task :copy_files do
+    on roles(:web) do
+      within release_path do
+        execute :cp, "#{shared_path}/config/package.json", "./"
+        execute :cp, "#{shared_path}/config/yarn.lock", "./"
+      end
+    end
+  end
+
+  desc 'Install Yarn dependencies'
+  task :yarn_install do
+    on roles(:web) do
+      within release_path do
+        execute :yarn, 'install --production --silent'
+      end
+    end
+  end
+
+  desc 'Compile assets with webpacker'
+  task :compile_assets do
+    on roles(:web) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :bundle, 'exec rails assets:precompile'
+        end
+      end
+    end
+  end
+end
+
+# Run the necessary tasks during deployment
+after 'deploy:updated', 'deploy:copy_files'
+after 'deploy:copy_files', 'deploy:yarn_install'
+after 'deploy:yarn_install', 'deploy:compile_assets'
+
 
