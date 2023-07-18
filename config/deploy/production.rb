@@ -60,3 +60,30 @@ server '82.115.26.171', user: 'deploy', roles: %w{app db web}
 #     auth_methods: %w(publickey password)
 #     # password: "please use keys"
 #   }
+# Load webpacker tasks
+namespace :deploy do
+  desc 'Install Yarn dependencies'
+  task :yarn_install do
+    on roles(:web) do
+      within release_path do
+        execute :yarn, 'install --production --silent'
+      end
+    end
+  end
+
+  desc 'Compile assets with webpacker'
+  task :compile_assets do
+    on roles(:web) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :bundle, 'exec rails assets:precompile'
+        end
+      end
+    end
+  end
+end
+
+# Run the necessary tasks during deployment
+after 'deploy:updated', 'deploy:yarn_install'
+after 'deploy:yarn_install', 'deploy:compile_assets'
+
